@@ -143,9 +143,6 @@
             console.log("numerator: " + numerator);
 
             var normalDamage = numerator / denominator;
-            if (bAtkUp == false) {
-                normalDamage = normalDamage / 10;
-            }
             var critDamage = normalDamage * crit;
             var crushDamage = normalDamage * 1.3;
             var missDamage = normalDamage * 0.75;
