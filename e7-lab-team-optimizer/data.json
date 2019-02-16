@@ -1,0 +1,29 @@
+[
+    {
+        "name": "name",
+        "chat1": "chat1",
+        "chat2": "chat1",
+        "advice": "advice",
+        "belief": "belief",
+        "bizarre_story": "bizarre_story",
+        "comforting_cheer": "comforting_cheer",
+        "complain": "complain",
+        "criticism": "criticism",
+        "cute_cheer": "cute_cheer",
+        "dream": "dream",
+        "food_story": "food_story",
+        "gossip": "gossip",
+        "happy_memory": "happy_memory",
+        "heroic_cheer": "heroic_cheer",
+        "heroic_tale": "heroic_tale",
+        "horror_story": "horror_story",
+        "interesting_story": "interesting_story",
+        "joyful_memory": "joyful_memory",
+        "myth": "myth",
+        "occult": "occult",
+        "reality_check": "reality_check",
+        "sad_memory": "sad_memory",
+        "self_indulgent": "self_indulgent",
+        "unique_comment": "unique_comment"
+    }
+]
