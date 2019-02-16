@@ -25,5 +25,32 @@
         "sad_memory": "sad_memory",
         "self_indulgent": "self_indulgent",
         "unique_comment": "unique_comment"
+    },
+    {
+        "name": "Achates",
+        "chat1": "comforting_cheer",
+        "chat2": "myth",
+        "advice": 8,
+        "belief": 0,
+        "bizarre_story": 1,
+        "comforting_cheer": 6,
+        "complain": -2,
+        "criticism": -4,
+        "cute_cheer": 6,
+        "dream": 4,
+        "food_story": 0,
+        "gossip": 4,
+        "happy_memory": 5,
+        "heroic_cheer": 5,
+        "heroic_tale": -2,
+        "horror_story": -3,
+        "interesting_story": 3,
+        "joyful_memory": 5,
+        "myth": 2,
+        "occult": -1,
+        "reality_check": -6,
+        "sad_memory": 5,
+        "self_indulgent": -5,
+        "unique_comment": 0
     }
 ]
