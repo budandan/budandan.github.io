@@ -52,5 +52,32 @@
         "sad_memory": 5,
         "self_indulgent": -5,
         "unique_comment": 0
-    }
+    },
+    {
+        "name": "Bellona",
+        "chat1": "happy_memory",
+        "chat2": "interesting_story",
+        "advice": -1,
+        "belief": 2,
+        "bizarre_story": 2,
+        "comforting_cheer": -1,
+        "complain": -1,
+        "criticism": 4,
+        "cute_cheer": 4,
+        "dream": 7,
+        "food_story": 3,
+        "gossip": 1,
+        "happy_memory": 2,
+        "heroic_cheer": 4,
+        "heroic_tale": 2,
+        "horror_story": 1,
+        "interesting_story": 6,
+        "joyful_memory": 2,
+        "myth": 5,
+        "occult": 3,
+        "reality_check": -1,
+        "sad_memory": 0,
+        "self_indulgent": 3,
+        "unique_comment": 
+    },
 ]
