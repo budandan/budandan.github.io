@@ -24,11 +24,90 @@
 </head>
 <body>
     <div class="container">
+        <div class="row text-center">
+            <h2>
+                Epic Seven Labyrinth Team Optimizer
+            </h2>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-1">
+                <label class='control-label'>Select Heroes:</label>
+                <select id="heroes-to-add" class='form-control'></select>
+                <p id='error-message' class='text-danger'></p>
+            </div>
+            <div class="col-md-2 text-center">
+                <br>
+                <button style='margin-top: 10px;' onclick='addHeroToRoster()' class='btn btn-success btn-sm'>Add Hero to Roster</button>
+            </div>
+            <div class="col-md-4">
+                <br>
+                <div class="panel panel-default">
+                    <div class="panel-heading text-center">Roster (min. 4 heroes)</div>
+                    <div class="panel-body" style='height: 300px; overflow-y: scroll;' id='roster-output'>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class='row text-center'>
+            <button class='btn btn-info' id='calc-btn' disabled>Calculate</button>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-10" id="results">
+
+            </div>
+        </div>
     </div>
+    <script src="data.js"></script>
     <script src="https://unpkg.com/tippy.js@3/dist/tippy.all.min.js"></script>
     <script>
         $(document).ready(function () {
+            for (var i = 0; i < allHeroes.length; i++) {
+                document.getElementById('heroes-to-add').innerHTML += `
+                    <option value='${allHeroes[i].name}'>${allHeroes[i].name}</option>
+                `;
+            }
         });
+
+        var currentRoster = [];
+        function setErrorMessage(message) {
+            document.getElementById('error-message').innerHTML = message;
+        }
+
+        function addHeroToRoster() {
+            let newHero = document.getElementById('heroes-to-add').value;
+            let roster = document.getElementById('roster-output');
+            if (currentRoster.includes(newHero)) {
+                setErrorMessage("Hero already exists in roster.")
+            } else {
+                roster.innerHTML += `
+                    <div class='row' id='${newHero}'>
+                        <div class='col-xs-10'>${newHero}</div>    
+                        <div class='col-xs-2 text-right'>
+                            <i class="fas fa-times" style='cursor: pointer; color: red;' onclick='removeHeroFromRoster("${newHero}")'></i>
+                        </div>    
+                    </div>
+                `;
+                currentRoster.push(newHero);
+                setErrorMessage("");
+            }
+        }
+
+        function checkForFourHeroes() {
+            if (currentRoster.length >= 4) {
+                $("#calc-btn").attr('disabled', false);
+            } else {
+                $("#calc-btn").attr('disabled', true);
+            }
+        }
+
+        function removeHeroFromRoster(hero) {
+            document.getElementById(hero).remove();
+            currentRoster.splice(currentRoster.indexOf(hero), 1);
+        }
     </script>
 </body>
 
