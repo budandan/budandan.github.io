@@ -60,11 +60,7 @@
         <div class="row">
             <div class="col-md-2 col-md-offset-5">
                 <label class='control-label'>Number of Teams:</label>   
-                <select class="form-control" id="num-of-teams">
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                </select>
+                <input type='number' value='5' class="form-control" id="num-of-teams" />
             </div>
         </div>
         <br>
@@ -84,6 +80,7 @@
                     <div class="panel-body">
                         <table class='table table-striped'>
                             <tr>
+                                <th></th>
                                 <th class='text-center'>Team</th>
                                 <th class='text-center'>Camp Option</th>
                                 <th class='text-center'>Score</th>
@@ -144,6 +141,7 @@
 
         function removeHeroFromRoster(hero) {
             document.getElementById(hero).remove();
+            checkForFourHeroes();
             currentRoster.splice(currentRoster.indexOf(hero), 1);
         }
 
@@ -168,13 +166,25 @@
                 teams_to_output = arrOfOutcomes.length;
             }
             for (var i = 0; i < teams_to_output; i++) {
+                let teamOutputString = "";
+                for (var teamCounter = 0; teamCounter < arrOfOutcomes[i].team.length; teamCounter++) {
+                    teamOutputString += arrOfOutcomes[i].team[teamCounter]
+                    if (teamCounter != arrOfOutcomes[i].team.length - 1) {
+                        teamOutputString += ", ";
+                    }
+                }
+                let bestChatOption1OutputString = arrOfOutcomes[i].bestChatOption1.hero.name + " - " + arrOfOutcomes[i].bestChatOption1.option.toString().replace('_', " ");
+                let bestChatOption2OutputString = arrOfOutcomes[i].bestChatOption2.hero.name + " - " + arrOfOutcomes[i].bestChatOption2.option.toString().replace('_', " ");
+                bestChatOption1OutputString = uppercaseWords(bestChatOption1OutputString);
+                bestChatOption2OutputString = uppercaseWords(bestChatOption2OutputString);
                 output.innerHTML += `
                     <tr>
-                        <td>${arrOfOutcomes[i].team}</td>
+                        <td>${i + 1}</td>
+                        <td>${teamOutputString}</td>
                         <td>
-                            ${arrOfOutcomes[i].bestChatOption1.hero.name} - ${arrOfOutcomes[i].bestChatOption1.option}
+                            ${bestChatOption1OutputString}
                             <br>
-                            ${arrOfOutcomes[i].bestChatOption2.hero.name} - ${arrOfOutcomes[i].bestChatOption2.option}
+                            ${bestChatOption2OutputString}
                         </td>
                         <td>${arrOfOutcomes[i].score}</td>
                     </tr>
@@ -184,7 +194,7 @@
             outputWrapper.show();
         }
 
-        
+
         function determineBestChatOptionsFromTeam(team) {
             let hero1 = allHeroes.filter(function (hero){
                 return hero.name === team[0];
@@ -279,6 +289,16 @@
             return 0;
         }
 
+        function uppercaseWords(str)
+        {
+            var array1 = str.split(' ');
+            var newarray1 = [];
+                
+            for(var x = 0; x < array1.length; x++){
+                newarray1.push(array1[x].charAt(0).toUpperCase()+array1[x].slice(1));
+            }
+            return newarray1.join(' ');
+        }
             
     </script>
 </body>
