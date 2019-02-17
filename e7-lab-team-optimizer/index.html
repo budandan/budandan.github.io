@@ -173,24 +173,22 @@
                         teamOutputString += ", ";
                     }
                 }
-                if (arrOfOutcomes[i].bestChatOption1.option.toString() != arrOfOutcomes[i].bestChatOption2.option.toString()) {
-                    let bestChatOption1OutputString = arrOfOutcomes[i].bestChatOption1.hero.name + " - " + arrOfOutcomes[i].bestChatOption1.option.toString().replace('_', " ");
-                    let bestChatOption2OutputString = arrOfOutcomes[i].bestChatOption2.hero.name + " - " + arrOfOutcomes[i].bestChatOption2.option.toString().replace('_', " ");
-                    bestChatOption1OutputString = uppercaseWords(bestChatOption1OutputString);
-                    bestChatOption2OutputString = uppercaseWords(bestChatOption2OutputString);
-                    output.innerHTML += `
-                        <tr>
-                            <td>${i + 1}</td>
-                            <td>${teamOutputString}</td>
-                            <td>
-                                ${bestChatOption1OutputString}
-                                <br>
-                                ${bestChatOption2OutputString}
-                            </td>
-                            <td>${arrOfOutcomes[i].score}</td>
-                        </tr>
-                    `;
-                }
+                let bestChatOption1OutputString = arrOfOutcomes[i].bestChatOption1.hero.name + " - " + arrOfOutcomes[i].bestChatOption1.option.toString().replace('_', " ");
+                let bestChatOption2OutputString = arrOfOutcomes[i].bestChatOption2.hero.name + " - " + arrOfOutcomes[i].bestChatOption2.option.toString().replace('_', " ");
+                bestChatOption1OutputString = uppercaseWords(bestChatOption1OutputString);
+                bestChatOption2OutputString = uppercaseWords(bestChatOption2OutputString);
+                output.innerHTML += `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td>${teamOutputString}</td>
+                        <td>
+                            ${bestChatOption1OutputString}
+                            <br>
+                            ${bestChatOption2OutputString}
+                        </td>
+                        <td>${arrOfOutcomes[i].score}</td>
+                    </tr>
+                `;
             }
             loader.hide();
             outputWrapper.show();
@@ -272,6 +270,10 @@
             });
 
             arrOfScoreObj.sort(compareScores);
+
+            while (arrOfScoreObj[0].option == arrOfScoreObj[1].option) {
+                arrOfScoreObj.splice(1, 1);
+            }
 
             let optimalCampForTeam = {
                 team: team,
