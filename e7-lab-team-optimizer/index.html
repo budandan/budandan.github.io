@@ -20,6 +20,12 @@
         i {
             margin-right: 5px;
         }
+        #results-wrapper {
+            display: none;
+        }
+        #loader {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -51,17 +57,48 @@
         </div>
         <br>
         <br>
-        <div class='row text-center'>
-            <button class='btn btn-info' id='calc-btn' disabled>Calculate</button>
+        <div class="row">
+            <div class="col-md-2 col-md-offset-5">
+                <label class='control-label'>Number of Teams:</label>   
+                <select class="form-control" id="num-of-teams">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                </select>
+            </div>
         </div>
         <br>
-        <div class="row">
-            <div class="col-md-10" id="results">
+        <br>
+        <div class='row text-center'>
+            <button class='btn btn-info' id='calc-btn' onclick="calculateOptimalTeam()" disabled>Calculate</button>
+        </div>
+        <br>
+        <br>
+        <div class="row text-center" id="loader">
+            <img src="loading.gif">
+        </div>
+        <div class="row text-center">
+            <div class="col-md-10 col-md-offset-1" id="results-wrapper">
+                <div class="panel panel-default text-center">
+                    <div class="panel-heading">Optimized Teams</div>
+                    <div class="panel-body">
+                        <table class='table table-striped'>
+                            <tr>
+                                <th class='text-center'>Team</th>
+                                <th class='text-center'>Camp Option</th>
+                                <th class='text-center'>Score</th>
+                            </tr>
+                            <tbody id='results'>
 
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <script src="data.js"></script>
+    <script src="combinations.js"></script>
     <script src="https://unpkg.com/tippy.js@3/dist/tippy.all.min.js"></script>
     <script>
         $(document).ready(function () {
@@ -94,6 +131,7 @@
                 currentRoster.push(newHero);
                 setErrorMessage("");
             }
+            checkForFourHeroes();
         }
 
         function checkForFourHeroes() {
@@ -108,6 +146,139 @@
             document.getElementById(hero).remove();
             currentRoster.splice(currentRoster.indexOf(hero), 1);
         }
+
+        var arrOfPossibleTeams = [];
+        const TEAM_SIZE = 4;
+        let output = document.getElementById("results");
+        let loader = $("#loader");
+        let outputWrapper = $("#results-wrapper");
+        function calculateOptimalTeam() {
+            output.innerHTML = "";
+            loader.show();
+            outputWrapper.hide();
+            arrOfPossibleTeams = k_combinations(currentRoster, TEAM_SIZE);
+            let arrOfOutcomes = [];
+            let teams_to_output = document.getElementById("num-of-teams").value;
+            for (var i = 0; i < arrOfPossibleTeams.length; i++) {
+                let result = determineBestChatOptionsFromTeam(arrOfPossibleTeams[i]);
+                arrOfOutcomes.push(result);
+            }
+            arrOfOutcomes.sort(compareScores);
+            if (arrOfOutcomes.length < teams_to_output) {
+                teams_to_output = arrOfOutcomes.length;
+            }
+            for (var i = 0; i < teams_to_output; i++) {
+                output.innerHTML += `
+                    <tr>
+                        <td>${arrOfOutcomes[i].team}</td>
+                        <td>
+                            ${arrOfOutcomes[i].bestChatOption1.hero.name} - ${arrOfOutcomes[i].bestChatOption1.option}
+                            <br>
+                            ${arrOfOutcomes[i].bestChatOption2.hero.name} - ${arrOfOutcomes[i].bestChatOption2.option}
+                        </td>
+                        <td>${arrOfOutcomes[i].score}</td>
+                    </tr>
+                `;
+            }
+            loader.hide();
+            outputWrapper.show();
+        }
+
+        function determineBestChatOptionsFromTeam(team) {
+            let hero1 = allHeroes.filter(function (hero){
+                return hero.name === team[0];
+            });
+            let hero2 = allHeroes.filter(function (hero){
+                return hero.name === team[1];
+            });
+            let hero3 = allHeroes.filter(function (hero){
+                return hero.name === team[2];
+            });
+            let hero4 = allHeroes.filter(function (hero){
+                return hero.name === team[3];
+            });
+
+            let arrOfScoreObj = [];
+            let scoreObjA1 = {
+                option: hero1[0].chat1,
+                hero: hero1[0],
+                score: 0
+            };
+            let scoreObjA2 = {
+                option: hero1[0].chat2,
+                hero: hero1[0],
+                score: 0
+            };
+            let scoreObjB1 = {
+                option: hero2[0].chat1,
+                hero: hero2[0],
+                score: 0
+            };
+            let scoreObjB2 = {
+                option: hero2[0].chat2,
+                hero: hero2[0],
+                score: 0
+            };
+            let scoreObjC1 = {
+                option: hero3[0].chat1,
+                hero: hero3[0],
+                score: 0
+            };
+            let scoreObjC2 = {
+                option: hero3[0].chat2,
+                hero: hero3[0],
+                score: 0
+            };
+            let scoreObjD1 = {
+                option: hero4[0].chat1,
+                hero: hero4[0],
+                score: 0
+            };
+            let scoreObjD2 = {
+                option: hero4[0].chat2,
+                hero: hero4[0],
+                score: 0
+            };
+            arrOfScoreObj.push(scoreObjA1);
+            arrOfScoreObj.push(scoreObjA2);
+            arrOfScoreObj.push(scoreObjB1);
+            arrOfScoreObj.push(scoreObjB2);
+            arrOfScoreObj.push(scoreObjC1);
+            arrOfScoreObj.push(scoreObjC2);
+            arrOfScoreObj.push(scoreObjD1);
+            arrOfScoreObj.push(scoreObjD2);
+
+            arrOfScoreObj.forEach(function(optionObj) {
+                let score = 0;
+                score += hero1[0][optionObj.option];
+                score += hero2[0][optionObj.option];
+                score += hero3[0][optionObj.option];
+                score += hero4[0][optionObj.option];
+                score -= optionObj.hero[optionObj.option];
+                optionObj.score = score;
+            });
+
+            arrOfScoreObj.sort(compareScores);
+
+            let optimalCampForTeam = {
+                team: team,
+                bestChatOption1: arrOfScoreObj[0],
+                bestChatOption2: arrOfScoreObj[1],
+                score: arrOfScoreObj[0].score + arrOfScoreObj[1].score
+            };
+
+            return optimalCampForTeam;
+        }
+
+        function compareScores(a,b) {
+            if (a.score > b.score)
+                return -1;
+            if (a.score < b.score)
+                return 1;
+            return 0;
+        }
+
+            
     </script>
 </body>
 
