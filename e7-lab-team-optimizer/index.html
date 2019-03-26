@@ -32,7 +32,7 @@
     <div class="container">
         <div class="row text-center">
             <h2>
-                Epic Seven Labyrinth Team Optimizer
+                Epic Seven Labyrinth Team Optimizer v1.1
             </h2>
         </div>
         <br>
@@ -98,15 +98,19 @@
     <script src="combinations.js"></script>
     <script src="https://unpkg.com/tippy.js@3/dist/tippy.all.min.js"></script>
     <script>
+        var currentRoster = [];
+        if (localStorage.getItem("Heroes") != null)
+        currentRoster = JSON.parse(localStorage.getItem("Heroes"));
         $(document).ready(function () {
             for (var i = 0; i < allHeroes.length; i++) {
                 document.getElementById('heroes-to-add').innerHTML += `
                     <option value='${allHeroes[i].name}'>${allHeroes[i].name}</option>
                 `;
             }
+            updateRosterBox(currentRoster);
+            checkForFourHeroes();
         });
 
-        var currentRoster = [];
         function setErrorMessage(message) {
             document.getElementById('error-message').innerHTML = message;
         }
@@ -129,6 +133,24 @@
                 setErrorMessage("");
             }
             checkForFourHeroes();
+            localStorage.setItem("Heroes", JSON.stringify(currentRoster));
+        }
+
+        function updateRosterBox(currentRoster) {
+            let roster = document.getElementById('roster-output');
+            roster.innerHTML = "";
+            if (currentRoster != null) {
+                for (var i = 0; i < currentRoster.length; i++) {
+                    roster.innerHTML += `
+                        <div class='row' id='${currentRoster[i]}'>
+                            <div class='col-xs-10'>${currentRoster[i]}</div>    
+                            <div class='col-xs-2 text-right'>
+                                <i class="fas fa-times" style='cursor: pointer; color: red;' onclick='removeHeroFromRoster("${currentRoster[i]}")'></i>
+                            </div>    
+                        </div>
+                    `;
+                }
+            }
         }
 
         function checkForFourHeroes() {
@@ -143,6 +165,7 @@
             document.getElementById(hero).remove();
             checkForFourHeroes();
             currentRoster.splice(currentRoster.indexOf(hero), 1);
+            localStorage.setItem("Heroes", JSON.stringify(currentRoster));
         }
 
         var arrOfPossibleTeams = [];
