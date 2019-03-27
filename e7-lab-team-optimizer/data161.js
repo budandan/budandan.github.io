@@ -3470,7 +3470,7 @@ var allHeroes = [
         "food_story": 1,
         "gossip": 4,
         "happy_memory": 2,
-        "heroic_cheer": 0,
+        "heroic_cheer": 4,
         "heroic_tale": 3,
         "horror_story": -2,
         "interesting_story": 4,
