@@ -378,7 +378,7 @@ var allHeroes = [
         "unique_comment": 3
     },
     {
-        "name": "Baal & Sezan",
+        "name": "Baal and Sezan",
         "chat1": "joyful_memory",
         "chat2": "bizarre_story",
         "advice": 5,
