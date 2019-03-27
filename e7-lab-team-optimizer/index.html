@@ -248,7 +248,6 @@
             } else {
                 $('#lock-' + sid).html(`<i class="fas fa-lock" style='cursor: pointer; color: #33E3FF;' onclick='unlockHero("${hero}", "${sid}")'></i>`);
                 lockedHeroes.push(hero);
-                console.log(lockedHeroes);
             }
             checkForThreeLockedHeroes();
         }
@@ -311,7 +310,6 @@
             if (lockedHeroes.includes(hero)) {
                 lockedHeroes.splice(lockedHeroes.indexOf(hero), 1);
             }
-            console.log(lockedHeroes);
             checkForThreeLockedHeroes();
             localStorage.setItem("Heroes", JSON.stringify(currentRoster));
         }
@@ -338,7 +336,6 @@
                     arrOfPossibleTeamsContainingLockedHeroes.push(lockedHeroesPlaceholderArr.slice());
                 }
             }
-            console.log(arrOfPossibleTeamsContainingLockedHeroes);
             for (var i = 0; i < arrOfPossibleTeamsContainingLockedHeroes.length; i++) {
                 let result = determineBestChatOptionsFromTeam(arrOfPossibleTeamsContainingLockedHeroes[i]);
                 arrOfOutcomes.push(result);
