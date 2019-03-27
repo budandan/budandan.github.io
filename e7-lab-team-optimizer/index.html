@@ -50,13 +50,14 @@
     <div class="container">
         <div class="row text-center">
             <h4>
-                Epic Seven Labyrinth Team Optimizer v1.5
+                Epic Seven Labyrinth Team Optimizer v1.6
             </h4>
             <div class="col-md-4 col-md-offset-4">
                 <span id='changelog' style="cursor: pointer;" onclick='toggleChangelog()'><i class="fas fa-caret-right"></i> Show Changelog</span>
                 <div id="changelog-wrapper" class='text-left' style='display:none;'>
                     <br>
                     <ul>
+                        <li><b>v1.6:</b> Adds "Find my Fourth" with three locked heroes.</li>
                         <li><b>v1.5:</b> Adds hero locking feature</li>
                         <li><b>v1.4:</b> Initial Reddit launch. Data is current up to Cermia.</li>
                     </ul>
@@ -96,13 +97,14 @@
                     </div>
                 </div>
                 <p id='lock-error-message' class='text-danger'><br></p>
+                <p id='add-fourth-hero-prompt' class='text-info'><br></p>
             </div>
         </div>
         <br>
         <br>
         <div class="row">
             <div class="col-md-2 col-md-offset-5">
-                <label class='control-label'>Number of Teams:</label>   
+                <label class='control-label'>Max Number of Teams:</label>   
                 <input type='number' value='5' class="form-control" id="num-of-teams" />
             </div>
         </div>
@@ -137,6 +139,34 @@
             </div>
         </div>
     </div>
+    <div id="find-fourth-modal" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Here's a List of Best Fourth Heroes for Your Team...</h4>
+                </div>
+                <div class="modal-body">
+                    <p class='text-danger' style='font-size: 0.8em;'>You cannot have a Specialty Change hero and its original form on the same team. Please disregard these teams; removing them is part of my future work on this calc.</p>
+                    <table class='table table-striped'>
+                        <tr>
+                            <th></th>
+                            <th class='text-center'>Team</th>
+                            <th class='text-center'>Camp Option</th>
+                            <th class='text-center'>Score</th>
+                        </tr>
+                        <tbody id='find-fourth-target'>
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+          
+            </div>
+          </div>
     <script src="data15.js"></script>
     <script src="combinations.js"></script>
     <script src="https://unpkg.com/tippy.js@3/dist/tippy.all.min.js"></script>
@@ -201,7 +231,7 @@
                                 <i class="fas fa-lock-open" style='cursor: pointer; color: grey;' onclick='lockHero("${newHero}", "${sid}")'></i>
                             </div>    
                         <div class='col-xs-1 text-right'>
-                            <i class="fas fa-times" style='cursor: pointer; color: red;' onclick='removeHeroFromRoster("${newHero}")'></i>
+                            <i class="fas fa-times" style='cursor: pointer; color: red;' onclick='removeHeroFromRoster("${newHero}", ${sid})'></i>
                         </div>    
                     </div>
                 `;
@@ -220,11 +250,13 @@
                 lockedHeroes.push(hero);
                 console.log(lockedHeroes);
             }
+            checkForThreeLockedHeroes();
         }
 
         function unlockHero(hero, sid) {
             $('#lock-' + sid).html(`<i class="fas fa-lock-open" style='cursor: pointer; color: grey;' onclick='lockHero("${hero}", "${sid}")'></i>`);
             lockedHeroes.splice(lockedHeroes.indexOf(hero), 1);
+            checkForThreeLockedHeroes();
             setLockErrorMessage("<br>");
         }
 
@@ -249,11 +281,19 @@
             }
         }
 
-        function containsAll(needles, haystack){ 
-            for(var i = 0 , len = needles.length; i < len; i++){
-                if($.inArray(needles[i], haystack) == -1) return false;
+        function checkForThreeLockedHeroes() {
+            if (lockedHeroes.length >= 3) {
+                $("#add-fourth-hero-prompt").html(`
+                    <p class='text-center'>
+                        You have three heroes locked. Would you like to find the best fourth hero out of all heroes?
+                        <br>
+                        <br>
+                        <button class='btn btn-primary btn-sm' data-toggle="modal" data-target="#find-fourth-modal" onclick='findFourth()'>Find My Fourth!</button>
+                    </p>
+                `)
+            } else {
+                $("#add-fourth-hero-prompt").html("<br>")
             }
-            return true;
         }
 
         function checkForFourHeroes() {
@@ -264,19 +304,77 @@
             }
         }
 
-        function removeHeroFromRoster(hero) {
+        function removeHeroFromRoster(hero, sid) {
             document.getElementById(hero).remove();
             checkForFourHeroes();
             currentRoster.splice(currentRoster.indexOf(hero), 1);
+            if (lockedHeroes.includes(hero)) {
+                lockedHeroes.splice(lockedHeroes.indexOf(hero), 1);
+            }
+            console.log(lockedHeroes);
+            checkForThreeLockedHeroes();
             localStorage.setItem("Heroes", JSON.stringify(currentRoster));
         }
 
         var arrOfPossibleTeams = [];
-        var arrOfPossibleTeamsContainingLockedHeroes = [];
         const TEAM_SIZE = 4;
         let output = document.getElementById("results");
+        let findFourthOutput = document.getElementById("find-fourth-target");
         let loader = $("#loader");
         let outputWrapper = $("#results-wrapper");
+
+        function findFourth() {
+            let arrOfPossibleTeamsContainingLockedHeroes = [];
+            findFourthOutput.innerHTML = "";
+            let arrOfOutcomes = [];
+            let teams_to_output = document.getElementById("num-of-teams").value;
+            let lockedHeroesPlaceholderArr = [];
+            for (let a = 0; a < allHeroes.length; a++) {
+                let fourthHeroName = allHeroes[a].name;
+                lockedHeroesPlaceholderArr = [];
+                lockedHeroesPlaceholderArr = lockedHeroes.slice();
+                if (!lockedHeroesPlaceholderArr.includes(fourthHeroName)) {
+                    lockedHeroesPlaceholderArr.push(fourthHeroName);
+                    arrOfPossibleTeamsContainingLockedHeroes.push(lockedHeroesPlaceholderArr.slice());
+                }
+            }
+            console.log(arrOfPossibleTeamsContainingLockedHeroes);
+            for (var i = 0; i < arrOfPossibleTeamsContainingLockedHeroes.length; i++) {
+                let result = determineBestChatOptionsFromTeam(arrOfPossibleTeamsContainingLockedHeroes[i]);
+                arrOfOutcomes.push(result);
+            }
+            arrOfOutcomes.sort(compareScores);
+            for (var i = 0; i < arrOfOutcomes.length; i++) {
+                let teamOutputString = "";
+                for (var teamCounter = 0; teamCounter < arrOfOutcomes[i].team.length; teamCounter++) {
+                    if (lockedHeroes.includes(arrOfOutcomes[i].team[teamCounter])) {
+                        teamOutputString += `<b>${arrOfOutcomes[i].team[teamCounter]}</b>`;
+                    } else {
+                        teamOutputString += arrOfOutcomes[i].team[teamCounter]
+                    }
+                    if (teamCounter != arrOfOutcomes[i].team.length - 1) {
+                        teamOutputString += ", ";
+                    }
+                }
+                let bestChatOption1OutputString = arrOfOutcomes[i].bestChatOption1.hero.name + " - " + arrOfOutcomes[i].bestChatOption1.option.toString().replace('_', " ");
+                let bestChatOption2OutputString = arrOfOutcomes[i].bestChatOption2.hero.name + " - " + arrOfOutcomes[i].bestChatOption2.option.toString().replace('_', " ");
+                bestChatOption1OutputString = uppercaseWords(bestChatOption1OutputString);
+                bestChatOption2OutputString = uppercaseWords(bestChatOption2OutputString);
+                findFourthOutput.innerHTML += `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td>${teamOutputString}</td>
+                        <td>
+                            ${bestChatOption1OutputString}
+                            <br>
+                            ${bestChatOption2OutputString}
+                        </td>
+                        <td>${arrOfOutcomes[i].score}</td>
+                    </tr>
+                `;
+            }
+        }
+
         function calculateOptimalTeam() {
             arrOfPossibleTeamsContainingLockedHeroes = [];
             output.innerHTML = "";
@@ -292,7 +390,6 @@
                 }
             } else {
                 var j = arrOfPossibleTeams.length;
-                console.log(arrOfPossibleTeams);
                 for (var j = 0; j < arrOfPossibleTeams.length; j++) {
                     let containsAllHeroes = true;
                     for (var k = 0; k < lockedHeroes.length; k++) {
@@ -305,7 +402,6 @@
                     }
                 }
                 arrOfPossibleTeams = arrOfPossibleTeamsContainingLockedHeroes;
-                console.log(arrOfPossibleTeams);
                 for (var i = 0; i < arrOfPossibleTeams.length; i++) {
                     let result = determineBestChatOptionsFromTeam(arrOfPossibleTeams[i]);
                     arrOfOutcomes.push(result);
@@ -347,7 +443,6 @@
             loader.hide();
             outputWrapper.show();
         }
-
 
         function determineBestChatOptionsFromTeam(team) {
             let hero1 = allHeroes.filter(function (hero){
