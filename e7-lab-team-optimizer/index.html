@@ -50,8 +50,32 @@
     <div class="container">
         <div class="row text-center">
             <h4>
-                Epic Seven Labyrinth Team Optimizer v1.4
+                Epic Seven Labyrinth Team Optimizer v1.5
             </h4>
+            <div class="col-md-4 col-md-offset-4">
+                <span id='changelog' style="cursor: pointer;" onclick='toggleChangelog()'><i class="fas fa-caret-right"></i> Show Changelog</span>
+                <div id="changelog-wrapper" class='text-left' style='display:none;'>
+                    <br>
+                    <ul>
+                        <li><b>v1.5:</b> Adds hero locking feature</li>
+                        <li><b>v1.4:</b> Initial Reddit launch. Data is current up to Cermia.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="col-md-4 col-md-offset-4">
+                <span id='instructions' style="cursor: pointer;" onclick='toggleInstructions()'><i class="fas fa-caret-right"></i> Show Instructions</span>
+                <div id="instructions-wrapper" class='text-left' style='display:none;'>
+                    <br>
+                    <p>
+                        <ul>
+                            <li>Select a hero on the left and click on "Add Hero to Roster" to create a roster of any size more than four heroes. Click on "Calculate" to see the teams with the highest morale.</li>
+                            <li>You may lock a hero using the <i class="fas fa-lock-open"></i> icon. Locking a hero will make sure your teams will always contain the locked heroes. You can lock up to three heroes.</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
         </div>
         <br>
         <div class="row">
@@ -71,6 +95,7 @@
                     <div class="panel-body" style='height: 300px; overflow-y: scroll;' id='roster-output'>
                     </div>
                 </div>
+                <p id='lock-error-message' class='text-danger'><br></p>
             </div>
         </div>
         <br>
@@ -117,6 +142,9 @@
     <script src="https://unpkg.com/tippy.js@3/dist/tippy.all.min.js"></script>
     <script>
         var currentRoster = [];
+        var lockedHeroes = [];
+        var showChangelog = false;
+        var showInstructions = false;
         if (localStorage.getItem("Heroes") != null)
         currentRoster = JSON.parse(localStorage.getItem("Heroes"));
         $(document).ready(function () {
@@ -129,8 +157,34 @@
             checkForFourHeroes();
         });
 
+        function toggleChangelog() {
+            showChangelog = showChangelog == false ? true : false;
+            if (showChangelog == true) {
+                $("#changelog-wrapper").show(50);
+                $("#changelog").html(`<i class="fas fa-caret-down"></i> Hide Changelog`);
+            } else {
+                $("#changelog").html(`<i class="fas fa-caret-right"></i> Show Changelog`);
+                $("#changelog-wrapper").hide(50);
+            }
+        }
+
+        function toggleInstructions() {
+            showChangelog = showChangelog == false ? true : false;
+            if (showChangelog == true) {
+                $("#instructions-wrapper").show(50);
+                $("#instructions").html(`<i class="fas fa-caret-down"></i> Hide Instructions`);
+            } else {
+                $("#instructions").html(`<i class="fas fa-caret-right"></i> Show Instructions`);
+                $("#instructions-wrapper").hide(50);
+            }
+        }
+
         function setErrorMessage(message) {
             document.getElementById('error-message').innerHTML = message;
+        }
+
+        function setLockErrorMessage(message) {
+            document.getElementById('lock-error-message').innerHTML = message;
         }
 
         function addHeroToRoster() {
@@ -139,10 +193,14 @@
             if (currentRoster.includes(newHero)) {
                 setErrorMessage("Hero already exists in roster.")
             } else {
+                let sid = newHero.replace(' ', '_');
                 roster.innerHTML += `
                     <div class='row' id='${newHero}'>
-                        <div class='col-xs-10'>${newHero}</div>    
-                        <div class='col-xs-2 text-right'>
+                        <div class='col-xs-9'>${newHero}</div> 
+                        <div class='col-xs-1 text-right' id='lock-${sid}'>
+                                <i class="fas fa-lock-open" style='cursor: pointer; color: grey;' onclick='lockHero("${newHero}", "${sid}")'></i>
+                            </div>    
+                        <div class='col-xs-1 text-right'>
                             <i class="fas fa-times" style='cursor: pointer; color: red;' onclick='removeHeroFromRoster("${newHero}")'></i>
                         </div>    
                     </div>
@@ -154,21 +212,48 @@
             localStorage.setItem("Heroes", JSON.stringify(currentRoster));
         }
 
+        function lockHero(hero, sid) {
+            if (lockedHeroes.length >= 3) {
+                setLockErrorMessage("You can only lock up to three heroes.");
+            } else {
+                $('#lock-' + sid).html(`<i class="fas fa-lock" style='cursor: pointer; color: #33E3FF;' onclick='unlockHero("${hero}", "${sid}")'></i>`);
+                lockedHeroes.push(hero);
+                console.log(lockedHeroes);
+            }
+        }
+
+        function unlockHero(hero, sid) {
+            $('#lock-' + sid).html(`<i class="fas fa-lock-open" style='cursor: pointer; color: grey;' onclick='lockHero("${hero}", "${sid}")'></i>`);
+            lockedHeroes.splice(lockedHeroes.indexOf(hero), 1);
+            setLockErrorMessage("<br>");
+        }
+
         function updateRosterBox(currentRoster) {
             let roster = document.getElementById('roster-output');
             roster.innerHTML = "";
             if (currentRoster != null) {
                 for (var i = 0; i < currentRoster.length; i++) {
+                    let sid = currentRoster[i].replace(' ', '_');
                     roster.innerHTML += `
                         <div class='row' id='${currentRoster[i]}'>
-                            <div class='col-xs-10'>${currentRoster[i]}</div>    
-                            <div class='col-xs-2 text-right'>
-                                <i class="fas fa-times" style='cursor: pointer; color: red;' onclick='removeHeroFromRoster("${currentRoster[i]}")'></i>
+                            <div class='col-xs-9'>${currentRoster[i]}</div> 
+                            <div class='col-xs-1 text-right' id='lock-${sid}'>
+                                <i class="fas fa-lock-open" style='cursor: pointer; color: grey;' onclick='lockHero("${currentRoster[i]}", "${sid}")'></i>
+                            </div>    
+                            <div class='col-xs-1 text-right'>
+                                <i class="fas fa-times" style='cursor: pointer; color: red;' onclick='removeHeroFromRoster("${currentRoster[i]}", "${sid}")'></i>
                             </div>    
                         </div>
                     `;
                 }
             }
+        }
+
+        function containsAll(needles, haystack){ 
+            for(var i = 0 , len = needles.length; i < len; i++){
+                if($.inArray(needles[i], haystack) == -1) return false;
+            }
+            return true;
         }
 
         function checkForFourHeroes() {
@@ -187,20 +272,44 @@
         }
 
         var arrOfPossibleTeams = [];
+        var arrOfPossibleTeamsContainingLockedHeroes = [];
         const TEAM_SIZE = 4;
         let output = document.getElementById("results");
         let loader = $("#loader");
         let outputWrapper = $("#results-wrapper");
         function calculateOptimalTeam() {
+            arrOfPossibleTeamsContainingLockedHeroes = [];
             output.innerHTML = "";
             loader.show();
             outputWrapper.hide();
             arrOfPossibleTeams = k_combinations(currentRoster, TEAM_SIZE);
             let arrOfOutcomes = [];
             let teams_to_output = document.getElementById("num-of-teams").value;
-            for (var i = 0; i < arrOfPossibleTeams.length; i++) {
-                let result = determineBestChatOptionsFromTeam(arrOfPossibleTeams[i]);
-                arrOfOutcomes.push(result);
+            if (lockedHeroes.length == 0) {
+                for (var i = 0; i < arrOfPossibleTeams.length; i++) {
+                    let result = determineBestChatOptionsFromTeam(arrOfPossibleTeams[i]);
+                    arrOfOutcomes.push(result);
+                }
+            } else {
+                var j = arrOfPossibleTeams.length;
+                console.log(arrOfPossibleTeams);
+                for (var j = 0; j < arrOfPossibleTeams.length; j++) {
+                    let containsAllHeroes = true;
+                    for (var k = 0; k < lockedHeroes.length; k++) {
+                        if (!arrOfPossibleTeams[j].includes(lockedHeroes[k])) {
+                            containsAllHeroes = false;
+                        }
+                    }
+                    if (containsAllHeroes) {
+                        arrOfPossibleTeamsContainingLockedHeroes.push(arrOfPossibleTeams[j]);
+                    }
+                }
+                arrOfPossibleTeams = arrOfPossibleTeamsContainingLockedHeroes;
+                console.log(arrOfPossibleTeams);
+                for (var i = 0; i < arrOfPossibleTeams.length; i++) {
+                    let result = determineBestChatOptionsFromTeam(arrOfPossibleTeams[i]);
+                    arrOfOutcomes.push(result);
+                }
             }
             arrOfOutcomes.sort(compareScores);
             if (arrOfOutcomes.length < teams_to_output) {
@@ -209,7 +318,11 @@
             for (var i = 0; i < teams_to_output; i++) {
                 let teamOutputString = "";
                 for (var teamCounter = 0; teamCounter < arrOfOutcomes[i].team.length; teamCounter++) {
-                    teamOutputString += arrOfOutcomes[i].team[teamCounter]
+                    if (lockedHeroes.includes(arrOfOutcomes[i].team[teamCounter])) {
+                        teamOutputString += `<b>${arrOfOutcomes[i].team[teamCounter]}</b>`;
+                    } else {
+                        teamOutputString += arrOfOutcomes[i].team[teamCounter]
+                    }
                     if (teamCounter != arrOfOutcomes[i].team.length - 1) {
                         teamOutputString += ", ";
                     }
