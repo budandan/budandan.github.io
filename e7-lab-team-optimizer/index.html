@@ -193,7 +193,7 @@
             if (currentRoster.includes(newHero)) {
                 setErrorMessage("Hero already exists in roster.")
             } else {
-                let sid = newHero.replace(' ', '_');
+                let sid = newHero.replace(/ /g, '_');
                 roster.innerHTML += `
                     <div class='row' id='${newHero}'>
                         <div class='col-xs-9'>${newHero}</div> 
@@ -233,7 +233,7 @@
             roster.innerHTML = "";
             if (currentRoster != null) {
                 for (var i = 0; i < currentRoster.length; i++) {
-                    let sid = currentRoster[i].replace(' ', '_');
+                    let sid = currentRoster[i].replace(/ /g, '_');
                     roster.innerHTML += `
                         <div class='row' id='${currentRoster[i]}'>
                             <div class='col-xs-9'>${currentRoster[i]}</div> 
