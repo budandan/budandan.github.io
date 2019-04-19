@@ -14,8 +14,10 @@ $(document).ready(function () {
     checkForFourHeroes();
     
     // make select2
+    $.fn.select2.defaults.set("width", null);
     $('#heroes-to-add').select2({
-        placeholder: "Type your hero name"
+        placeholder: "Type your hero name",
+        theme: "bootstrap"
     });
 });
 

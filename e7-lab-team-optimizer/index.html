@@ -27,31 +27,10 @@
 
     <!-- Select2 -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
-    <style>
-        i {
-            margin-right: 5px;
-        }
-        #results-wrapper {
-            display: none;
-        }
-        #loader {
-            display: none;
-        }
-        span.selection > .select2-selection {
-            padding: 6px;
-            border: solid #dce4ec 2px;
-            transition: all .2s ease-in-out; 
-        }
-
-        span.selection > .select2-selection:focus-within {
-            border: solid #2c3e50 2px;
-        }
-
-        li.select2-selection__choice {
-            background-color: whitesmoke !important;
-        }
-    </style>
+    <!-- Override style -->
+    <link href="style.css" rel="stylesheet" />
 </head>
 <body>
     <nav class="navbar navbar-inverse">
