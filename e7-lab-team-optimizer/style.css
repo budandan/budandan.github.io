@@ -1,0 +1,30 @@
+i {
+    margin-right: 5px;
+}
+#results-wrapper {
+    display: none;
+}
+#loader {
+    display: none;
+}
+
+/* For override Select2 component */
+
+span.selection > .select2-selection {
+    padding: 0.32em;
+    border: solid #dce4ec 2px;
+    transition: all .2s ease-in-out; 
+}
+
+span.selection > .select2-selection:focus-within {
+    border: solid #2c3e50 2px;
+}
+
+li.select2-selection__choice {
+    background-color: whitesmoke !important;
+}
+
+span.select2-dropdown.select2-dropdown--below {
+    border: solid #2c3e50 2px;
+    margin-top: -2px;
+}
