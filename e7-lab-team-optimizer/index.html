@@ -58,7 +58,7 @@
     <div class="container">
         <div class="row text-center">
             <h4>
-                Epic Seven Labyrinth Team Optimizer v1.7.2
+                Epic Seven Labyrinth Team Optimizer v1.7.3
             </h4>
             <p class='text-center' style='font-size: 0.7em;'>
                 If you find a bug or wish to submit feedback, contact me on discord: <strong class='text-info'>budandan#1947</strong>.
@@ -68,6 +68,7 @@
                 <div id="changelog-wrapper" class='text-left' style='display:none;'>
                     <br>
                     <ul>
+                        <li><b>v1.7.3:</b> Fixes a bug where the user could not delete some heroes with spaces in their names. (Credit to Jay#0462)</li>
                         <li><b>v1.7.2:</b> Adds Baiken, Crescent Moon Rin, Sol and Sage B&S.</li>
                         <li><b>v1.6.1:</b> Fixes Yuna's Heroic Cheer value.</li>
                         <li><b>v1.6:</b> Adds "Find my Fourth" with three locked heroes.</li>
@@ -245,7 +246,7 @@
                                 <i class="fas fa-lock-open" style='cursor: pointer; color: grey;' onclick='lockHero("${newHero}", "${sid}")'></i>
                             </div>    
                         <div class='col-xs-1 text-right'>
-                            <i class="fas fa-times" style='cursor: pointer; color: red;' onclick='removeHeroFromRoster("${newHero}", ${sid})'></i>
+                            <i class="fas fa-times" style='cursor: pointer; color: red;' onclick='removeHeroFromRoster("${newHero}", "${sid}")'></i>
                         </div>    
                     </div>
                 `;
