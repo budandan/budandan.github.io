@@ -66,7 +66,7 @@ function addHeroToRoster() {
                             <i class="fas fa-lock-open" style='cursor: pointer; color: grey;' onclick='lockHero("${newHero.text}", "${sid}")'></i>
                         </div>    
                     <div class='col-xs-1 text-right'>
-                        <i class="fas fa-times" style='cursor: pointer; color: red;' onclick='removeHeroFromRoster("${newHero.text}", ${sid})'></i>
+                        <i class="fas fa-times" style='cursor: pointer; color: red;' onclick='removeHeroFromRoster("${newHero.text}", "${sid}")'></i>
                     </div>    
                 </div>
             `;
