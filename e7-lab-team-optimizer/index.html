@@ -54,7 +54,7 @@
     <div class="container">
         <div class="row text-center">
             <h4>
-                Epic Seven Labyrinth Team Optimizer v1.6.1
+                Epic Seven Labyrinth Team Optimizer v1.8
             </h4>
             <p class='text-center' style='font-size: 0.7em;'>
                 If you find a bug or wish to submit feedback, contact me on discord: <strong class='text-info'>budandan#1947</strong>.
@@ -64,6 +64,9 @@
                 <div id="changelog-wrapper" class='text-left' style='display:none;'>
                     <br>
                     <ul>
+                        <li><b>v1.8:</b> Adds a mobile friendly, searchable dropdown hero menu. (Credit to tomhero#3389)</li>
+                        <li><b>v1.7.3:</b> Fixes a bug where the user could not delete some heroes with spaces in their names. (Credit to Jay#0462)</li>
+                        <li><b>v1.7.2:</b> Adds Baiken, Crescent Moon Rin, Sol and Sage B&S.</li>
                         <li><b>v1.6.1:</b> Fixes Yuna's Heroic Cheer value.</li>
                         <li><b>v1.6:</b> Adds "Find my Fourth" with three locked heroes.</li>
                         <li><b>v1.5:</b> Adds hero locking feature</li>
@@ -96,7 +99,7 @@
             </div>
             <div class="col-md-2 text-center">
                 <br>
-                <button style='margin-top: 10px;' onclick='addHeroToRoster()' class='btn btn-success btn-sm'>Add Hero to Roster</button>
+                <button style='margin-top: 10px;' onclick='addHeroToRoster()' class='btn btn-success btn-sm'>Add Heroes to Roster</button>
             </div>
             <div class="col-md-4">
                 <br>
@@ -149,34 +152,34 @@
         </div>
     </div>
     <div id="find-fourth-modal" class="modal fade" role="dialog">
-            <div class="modal-dialog modal-lg">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal">&times;</button>
-                  <h4 class="modal-title">Here's a List of the Best Fourth Heroes for Your Team...</h4>
-                </div>
-                <div class="modal-body">
-                    <p class='text-danger' style='font-size: 0.8em;'>You cannot have a Specialty Change hero and its original form on the same team. Please disregard these teams; removing them is part of my future work on this calc.</p>
-                    <table class='table table-striped'>
-                        <tr>
-                            <th></th>
-                            <th>Team</th>
-                            <th>Camp Option</th>
-                            <th>Score</th>
-                        </tr>
-                        <tbody id='find-fourth-target'>
-
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">Close</button>
-                </div>
-              </div>
-          
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Here's a List of the Best Fourth Heroes for Your Team...</h4>
             </div>
-          </div>
-    <script src="data161.js"></script>
+            <div class="modal-body">
+                <p class='text-danger' style='font-size: 0.8em;'>You cannot have a Specialty Change hero and its original form on the same team. Please disregard these teams; removing them is part of my future work on this calc.</p>
+                <table class='table table-striped'>
+                    <tr>
+                        <th></th>
+                        <th>Team</th>
+                        <th>Camp Option</th>
+                        <th>Score</th>
+                    </tr>
+                    <tbody id='find-fourth-target'>
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">Close</button>
+            </div>
+            </div>
+        
+        </div>
+    </div>
+    <script src="data172.js"></script>
     <script src="combinations.js"></script>
     <script src="https://unpkg.com/tippy.js@3/dist/tippy.all.min.js"></script>
     <script src="script.js"></script>
